@@ -21,6 +21,13 @@ const CreateLink = () => {
     url: ''
   });
 
+  const [createLink] = useMutation(CREATE_LINK_MUTATION, {
+    variables: {
+      description: formState.description,
+      url: formState.url
+    }
+  })
+
   return (
     <div>
       <form
