@@ -20,7 +20,7 @@ const CreateLink = () => {
     description: '',
     url: ''
   });
-
+  //with the useMutation hook, we must destructure out a function, [createLink], that can used to call the mutation
   const [createLink] = useMutation(CREATE_LINK_MUTATION, {
     variables: {
       description: formState.description,
@@ -33,6 +33,7 @@ const CreateLink = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          createLink();
         }}
       >
         <div className="flex flex-column mt3">
