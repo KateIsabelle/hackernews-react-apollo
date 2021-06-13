@@ -16,6 +16,7 @@ const App = () => {
           <Route exact path="/login" component={Login}/>
         </Switch>
       </div>
+      <CreateLink />
     </div>
   );
 };
