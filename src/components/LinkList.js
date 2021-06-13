@@ -1,7 +1,22 @@
 import React from 'react';
+import { useQuery, gql } from '@apollo/client';
 import Link from './Link';
 
 const LinkList = () => {
+  const FEED_QUERY = gql`
+    {
+      feed {
+        id
+        links {
+          id
+          createdAt
+          url
+          description
+        }
+      }
+    }
+  `
+
   const linksToRender = [
     {
       id: '1',
