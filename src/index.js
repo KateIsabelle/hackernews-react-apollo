@@ -22,10 +22,11 @@ const httpLink = createHttpLink({
 
 //fix authorization bug
 const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem(AUTH_TOKEN);
   return {
     headers: {
       ...headers,
-      authorization: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTYyMzYxODUxN30.A-mJRyx1YjmWkNjly_pIdU5KvPJmO0-MF5vKVXDvdHQ',
+      authorization: token ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQsImlhdCI6MTYyMzYxODUxN30.A-mJRyx1YjmWkNjly_pIdU5KvPJmO0-MF5vKVXDvdHQ' : '',
     }
   }
 });
