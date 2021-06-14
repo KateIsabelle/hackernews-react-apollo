@@ -18,7 +18,6 @@ const App = () => {
           <Route exact path="/search" component={Search}/>
         </Switch>
       </div>
-      <CreateLink />
     </div>
   );
 };
