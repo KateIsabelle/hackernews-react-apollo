@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router';
 import { useMutation, gql } from '@apollo/client';
+import { LINKS_PER_PAGE } from '../constants';
+import { FEED_QUERY } from './LinkList';
 
 const CREATE_LINK_MUTATION = gql`
   mutation PostMutation(
@@ -27,6 +29,35 @@ const CreateLink = () => {
     variables: {
       description: formState.description,
       url: formState.url
+    },
+    update: (cache, { data: { post }}) => {
+      const take = LINKS_PER_PAGE;
+      const skip = 0;
+      const orderBy = { createdAt: 'desc' };
+      //read the current state of the results of the FEED_QUERY:
+      const data = cache.readQuery({
+        query: FEED_QUERY,
+        variables: {
+          take,
+          skip,
+          orderBy
+        }
+      });
+      //insert the newest link at beginning and write the query results back to the store
+      cache.writeQuery({
+        query: FEED_QUERY,
+        //we also need to specify the conditions of the original query we’re targeting
+        data: {
+          feed: {
+            links: [post, ...data.feed.links]
+          }
+        },
+        variables: {
+          take, 
+          skip,
+          orderBy
+        }
+      })
     },
     onCompleted: () => history.push('/')
   })
