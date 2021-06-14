@@ -27,14 +27,18 @@ const VOTE_MUTATION = gql`
 const Link = (props) => {
   const { link } = props;
   const authToken = localStorage.getItem(AUTH_TOKEN);
+  
   const [vote] = useMutation(VOTE_MUTATION, {
     variables: {
       linkId: link.id
     },
+    //The vote that was made with the mutation is destructured out
     update(cache, { data: { vote }}) {
       const { feed } = cache.readQuery({
+        //This allows us to read the exact portion of the Apollo cache that we need to allow us to update it:
         query: FEED_QUERY
       });
+      //Once we have the cache, we create a new array of data that includes the vote that was just made
       const updatedLinks = feed.links.map(feedLink => {
         if (feedLink.id === link.id) {
           return {
@@ -44,6 +48,7 @@ const Link = (props) => {
         }
         return feedLink;
       });
+      // Once we have the new list of votes, we can commit the changes to the cache, passing in the new data
       cache.writeQuery({
         query: FEED_QUERY,
         data: {
