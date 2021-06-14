@@ -5,8 +5,12 @@ import Link from './Link';
 import { LINKS_PER_PAGE } from '../constants';
 
 export const FEED_QUERY = gql`
-  {
-    feed {
+  query FeedQuery(
+    $take: Int
+    $skip: Int
+    $orderBy: LinkOrderByInput
+  ) {
+    feed(take: $take, skip: $skip, orderBy: $orderBy) {
       id
       links {
         id
@@ -14,7 +18,7 @@ export const FEED_QUERY = gql`
         url
         description
         postedBy {
-          id 
+          id  
           name
         }
         votes {
@@ -24,9 +28,10 @@ export const FEED_QUERY = gql`
           }
         }
       }
+      count
     }
   }
-`;
+  `;
 const NEW_LINKS_SUBSCRIPTION = gql`
   subscription {
     newLink {
