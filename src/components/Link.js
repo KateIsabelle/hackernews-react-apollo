@@ -5,7 +5,7 @@ import { FEED_QUERY } from './LinkList';
 import { useMutation, gql } from '@apollo/client'
 
 const VOTE_MUTATION = gql`
-  mutation VoteMutation($linkId: $ID!) {
+  mutation VoteMutation($linkId: ID!) {
     vote(linkId: $linkId) {
       id
       link {
@@ -27,6 +27,11 @@ const VOTE_MUTATION = gql`
 const Link = (props) => {
   const { link } = props;
   const authToken = localStorage.getItem(AUTH_TOKEN);
+  const [vote] = useMutation(VOTE_MUTATION, {
+    variables: {
+      linkId: link.id
+    }
+  })
 
   //const take = LINKS_PER_PAGE;
   const skip = 0;
@@ -40,7 +45,7 @@ const Link = (props) => {
           <div
             className="ml1 gray f11"
             style={{ cursor: 'pointer' }}
-            onClick={() => console.log('vote')}
+            onClick={vote}
           >
             ▲
           </div>
