@@ -1,7 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
+import { split } from '@apollo/client';
+import { WebSocketLink } from '@apollo/client/link/ws';
+import { getMainDefinition } from '@apollo/client/utilities';
 //import * as serviceWorker from './serviceWorker';
+
 //middleware invoked every time Apollo Client sends a request to the server
 import { setContext } from "@apollo/client/link/context";
 import { AUTH_TOKEN } from './constants';
