@@ -80,7 +80,10 @@ const NEW_VOTES_SUBSCRIPTION = gql`
   }
 `;
 
+//function is responsible for returning values for skip, take, and orderBy
 const getQueryVariables = (isNewPage, page) => {
+  //if we're on /new route, skip equals the current page (subtracting 1 to handle the index) multiplied by the LINKS_PER_PAGE constant
+  //else, skip equals 0
   const skip = isNewPage ? (page - 1) * LINKS_PER_PAGE : 0;
   const take = isNewPage ? LINKS_PER_PAGE : 100;
   const orderBy = { createdAt: 'desc' };
