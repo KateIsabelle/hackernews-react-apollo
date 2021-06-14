@@ -134,11 +134,24 @@ const LinkList = () => {
     });
   }
   });
-
+  //subscribe to new votes
   subscribeToMore({
     document: NEW_VOTES_SUBSCRIPTION
   });
 
+  // calculate the list of links to be rendered
+  const getLinksToRender = (isNewPage, data) => {
+    if (isNewPage) {
+      return data.feed.links;
+    }
+    const rankedLinks = data.feed.links.slice();
+    rankedLinks.sort(
+      (l1, l2) => l2.votes.length - l1.votes.length
+    );
+    return rankedLinks;
+  };
+
+  //component returned
   return (
     <>
       {loading && <p>Loading...</p>}
