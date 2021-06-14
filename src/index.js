@@ -13,7 +13,6 @@ import App from './components/App';
 
 import './styles/index.css';
 
-// 1
 import {
   ApolloProvider,
   ApolloClient,
@@ -21,12 +20,10 @@ import {
   InMemoryCache
 } from '@apollo/client';
 
-// 2
 const httpLink = createHttpLink({
   uri: 'http://localhost:4000'
 });
 
-//fix authorization bug
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem(AUTH_TOKEN);
   return {
@@ -38,13 +35,39 @@ const authLink = setContext((_, { headers }) => {
   }
 });
 
-// 3
+//represents the WebSocket connection
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:4000/graphql`,
+  options: {
+    reconnect: true,
+    connectionParams: {
+      authToken: localStorage.getItem(AUTH_TOKEN)
+    }
+  }
+});
+
+//use split for proper 'routing' of the requests (to a specific middleware link)
+const link = split(
+  //first argument: test function which returns a boolean
+  //tests whether the requested operation is a subscription
+  ({ query }) => {
+    const { kind, operation } = getMainDefinition(query);
+    return (
+      kind === 'OperationDefinition' &&
+      operation === 'subscription'
+    );
+  },
+  //if test function returns true, request is forwarded to this ApolloLink:
+  wsLink,
+  //if false, to this ApolloLink:
+  authLink.concat(httpLink)
+);
+
 const client = new ApolloClient({
-  link: authLink.concat(httpLink),
+  link: link, //authLink.concat(httpLink),
   cache: new InMemoryCache()
 });
 
-// 4
 ReactDOM.render(
   <BrowserRouter>
     <ApolloProvider client={client}>
