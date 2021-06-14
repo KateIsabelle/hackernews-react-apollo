@@ -28,6 +28,10 @@ const Link = (props) => {
   const { link } = props;
   const authToken = localStorage.getItem(AUTH_TOKEN);
 
+  const take = LINKS_PER_PAGE;
+  const skip = 0;
+  const orderBy = { createdAt: 'desc' };
+
   const [vote] = useMutation(VOTE_MUTATION, {
     variables: {
       linkId: link.id
@@ -36,7 +40,12 @@ const Link = (props) => {
     update(cache, { data: { vote }}) {
       const { feed } = cache.readQuery({
         //This allows us to read the exact portion of the Apollo cache that we need to allow us to update it:
-        query: FEED_QUERY
+        query: FEED_QUERY,
+        variables: {
+          take,
+          skip, 
+          orderBy
+        }
       });
       //Once we have the cache, we create a new array of data that includes the vote that was just made
       const updatedLinks = feed.links.map(feedLink => {
@@ -55,14 +64,15 @@ const Link = (props) => {
           feed: {
             links: updatedLinks
           }
+        },
+        variables: {
+          take,
+          skip,
+          orderBy
         }
       })
     }
   })
-
-  const take = LINKS_PER_PAGE;
-  const skip = 0;
-  const orderBy = { createdAt: 'desc' };
 
   return (
     <div className="flex mt2 items-start">

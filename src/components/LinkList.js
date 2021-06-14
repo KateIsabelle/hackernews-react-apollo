@@ -141,9 +141,11 @@ const LinkList = () => {
 
   // calculate the list of links to be rendered
   const getLinksToRender = (isNewPage, data) => {
+    //for newPage, we simply return all the links returned by the query
     if (isNewPage) {
       return data.feed.links;
     }
+    //from /top route, sort the list according to the number of votes and return the top 10 links
     const rankedLinks = data.feed.links.slice();
     rankedLinks.sort(
       (l1, l2) => l2.votes.length - l1.votes.length
